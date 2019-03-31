@@ -7,7 +7,8 @@ import 'hybridView.dart';
 
 /// 应用程序主入口
 //void main() => runApp(GridViewPage());
-void main() => runApp(new HybridView().widgetForRoute(window.defaultRouteName));
+//void main() => runApp(new HybridView().widgetForRoute(window.defaultRouteName));
+void main() => runApp(new HybridView().widgetForRoute('route3'));
 
 class MyApp2 extends StatelessWidget {
   @override
