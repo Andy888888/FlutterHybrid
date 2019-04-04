@@ -1,150 +1,309 @@
 import 'package:flutter/material.dart';
 
-class EditProperty extends StatelessWidget {
+FocusNode _buildFocusNode = FocusNode();
+FocusNode _pragmaticFocusNode = FocusNode();
+FocusNode _rentFocusNode = FocusNode();
+FocusNode _commentFocusNode = FocusNode();
+
+TextEditingController _buildController = TextEditingController(text: '150.00');
+TextEditingController _pragmaticController = TextEditingController(text: '');
+TextEditingController _commentController = TextEditingController(text: '');
+
+class EditProperty extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return PropertyState();
+  }
+}
+
+class PropertyState extends State<EditProperty> {
   @override
   Widget build(BuildContext context) {
     var title = '编辑房源';
-    return MaterialApp(
+    return new MaterialApp(
       title: title,
       home: Scaffold(
-          appBar: AppBar(
-            title: Text(title),
+        appBar: _appBar(context, title),
+        body: EditPropertyBody(),
+      ),
+    );
+  }
+
+  Widget _appBar(BuildContext context, String title) {
+    return AppBar(
+      title: new Text(title),
+      actions: <Widget>[
+        Row(
+          children: <Widget>[
+            FlatButton(
+              child: Text(
+                '重置',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {},
+            ),
+            FlatButton(
+              child: Text(
+                '提交',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                _showMsg(context);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _showMsg(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('标题'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                new Text('内容 1'),
+                new Text('内容 2'),
+              ],
+            ),
           ),
-          body: Container(
-            child: CustomScrollView(
-              shrinkWrap: true,
-              slivers: <Widget>[
-                new SliverPadding(
-                  padding: const EdgeInsets.all(0.0),
-                  sliver: new SliverList(
-                    delegate: new SliverChildListDelegate(
-                      <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            '基本信息',
-                            style: TextStyle(
-                              fontSize: 22.0,
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('确定'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class EditPropertyBody extends StatelessWidget {
+//  FocusNode _buildFocusNode = FocusNode();
+//  FocusNode _pragmaticFocusNode = FocusNode();
+//  FocusNode _rentFocusNode = FocusNode();
+//  FocusNode _commentFocusNode = FocusNode();
+
+  @override
+  Widget build(BuildContext context) {
+    return _body(context);
+  }
+
+  void showMsg(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('标题'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                new Text('建筑面积：' + _buildController.text),
+                new Text('实用面积：' + _pragmaticController.text),
+                new Text('点评内容：' + _commentController.text),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('确定'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (TapDownDetails details) {
+        _buildFocusNode.unfocus();
+        _pragmaticFocusNode.unfocus();
+        _rentFocusNode.unfocus();
+        _commentFocusNode.unfocus();
+      },
+      child: Container(
+        child: CustomScrollView(
+          shrinkWrap: true,
+          slivers: <Widget>[
+            new SliverPadding(
+              padding: const EdgeInsets.all(0.0),
+              sliver: new SliverList(
+                delegate: new SliverChildListDelegate(
+                  <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '基本信息',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                        ),
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: Text('建筑面积')),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              focusNode: _buildFocusNode,
+                              controller: _buildController,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
+                                icon: Icon(Icons.attach_money),
+                                labelText: '建筑面积',
+                              ),
+                              autofocus: false,
                             ),
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(child: Text('建筑面积')),
-                              Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  controller:
-                                      TextEditingController(text: '150.00'),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10.0),
-                                    icon: Icon(Icons.attach_money),
-                                    labelText: '请输入建筑面积',
-                                  ),
-                                  autofocus: false,
-                                ),
-                              ),
-                              Text(
-                                ' ㎡',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
+                          Text(
+                            ' ㎡',
+                            style: TextStyle(color: Colors.grey),
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Divider(),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(child: Text('实用面积')),
-                              Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10.0),
-                                    icon: Icon(Icons.attach_money),
-                                    labelText: '请输入实用面积',
-                                  ),
-                                  autofocus: false,
-                                ),
-                              ),
-                              Text(
-                                ' ㎡',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        FragmentDivider(),
-                      ],
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
                     ),
-                  ),
-                ),
-                new SliverPadding(
-                  padding: const EdgeInsets.all(0.0),
-                  sliver: new SliverList(
-                    delegate: new SliverChildListDelegate(
-                      <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(child: Text('朝向')),
-                              Text('南'),
-                              Icon(
-                                Icons.keyboard_arrow_right,
-                                color: Colors.grey,
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: Text('实用面积')),
+                          Expanded(
+                            child: TextField(
+                              focusNode: _pragmaticFocusNode,
+                              controller: _pragmaticController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
+                                icon: Icon(Icons.attach_money),
+                                labelText: '实用面积',
                               ),
-                            ],
+                              autofocus: false,
+                            ),
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Divider(),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
+                          Text(
+                            ' ㎡',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    FragmentDivider(),
+                  ],
+                ),
+              ),
+            ),
+            new SliverPadding(
+              padding: const EdgeInsets.all(0.0),
+              sliver: new SliverList(
+                delegate: new SliverChildListDelegate(
+                  <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: Text('朝向')),
+                          Text('南'),
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
                             children: <Widget>[
                               Expanded(child: Text('房型')),
                             ],
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Divider(),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Row(
+                          Row(
                             children: <Widget>[
-                              Expanded(child: Text('租价')),
-                              Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  controller:
-                                      TextEditingController(text: '2222'),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10.0),
-                                    icon: Icon(Icons.attach_money),
-                                    labelText: '请输入租价',
-                                  ),
-                                  autofocus: false,
-                                ),
-                              ),
-                              Text(
-                                ' 元',
-                                style: TextStyle(color: Colors.grey),
-                              ),
+                              SquareLabel(Colors.grey, '3')
+                                  .setWidth(50)
+                                  .setLeftPadding(20),
+                              Text('室'),
+                              SquareLabel(Colors.grey, '1')
+                                  .setWidth(50)
+                                  .setLeftPadding(20)
+                                  .setLeftMargin(10),
+                              Text('厅'),
+                              SquareLabel(Colors.grey, '1')
+                                  .setWidth(50)
+                                  .setLeftPadding(20)
+                                  .setLeftMargin(10),
+                              Text('厨'),
+                              SquareLabel(Colors.grey, '2')
+                                  .setWidth(50)
+                                  .setLeftPadding(20)
+                                  .setLeftMargin(10),
+                              Text('卫'),
                             ],
+                          )
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: Text('租价')),
+                          Expanded(
+                            child: TextField(
+                              focusNode: _rentFocusNode,
+                              keyboardType: TextInputType.number,
+                              controller: TextEditingController(text: '2222'),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
+                                icon: Icon(Icons.attach_money),
+                                labelText: '请输入租价',
+                              ),
+                              autofocus: false,
+                            ),
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Divider(),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
+                          Text(
+                            ' 元',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
                             children: <Widget>[
                               Expanded(child: Text('房源属性')),
                               Text('请选择'),
@@ -154,37 +313,54 @@ class EditProperty extends StatelessWidget {
                               ),
                             ],
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        FragmentDivider(),
-                      ],
-                    ),
-                  ),
-                ),
-                new SliverPadding(
-                  padding: const EdgeInsets.all(0.0),
-                  sliver: new SliverList(
-                    delegate: new SliverChildListDelegate(
-                      <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            '出租点评',
-                            style: TextStyle(
-                              fontSize: 22.0,
-                            ),
+                          Row(
+                            children: <Widget>[
+                              SquareLabel(Colors.red, '南北通透'),
+                              SquareLabel(Colors.red, '主卧朝南'),
+                              SquareLabel(Colors.red, '双卫生间'),
+                            ],
                           ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        MultiInput(),
-                        BottomLine(),
-                      ],
+                        ],
+                      ),
+                      alignment: Alignment.centerLeft,
                     ),
-                  ),
-                )
-              ],
+                    FragmentDivider(),
+                  ],
+                ),
+              ),
             ),
-          )),
+            new SliverPadding(
+              padding: const EdgeInsets.all(0.0),
+              sliver: new SliverList(
+                delegate: new SliverChildListDelegate(
+                  <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '出租点评',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                        ),
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    MultiInput(_commentFocusNode),
+                    RaisedButton(
+                      child: Text(
+                        '提交',
+                      ),
+                      onPressed: () {
+                        showMsg(context);
+                      },
+                    ),
+                    BottomLine(),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -201,6 +377,10 @@ class FragmentDivider extends StatelessWidget {
 }
 
 class MultiInput extends StatelessWidget {
+  FocusNode commentFocusNode;
+
+  MultiInput(this.commentFocusNode);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -213,6 +393,8 @@ class MultiInput extends StatelessWidget {
             hintColor: Color.fromARGB(255, 222, 222, 222),
           ),
           child: TextField(
+            focusNode: commentFocusNode,
+            controller: _commentController,
             maxLines: 10,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10.0),
@@ -229,7 +411,7 @@ class BottomLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.fromLTRB(10, 20, 10, 30),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -245,5 +427,59 @@ class BottomLine extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class SquareLabel extends StatelessWidget {
+  Color borderColor;
+  String text;
+  double width = 84;
+  double leftPadding = 10;
+  double leftMargin = 0;
+
+  SquareLabel(this.borderColor, this.text);
+
+  SquareLabel setWidth(double width) {
+    this.width = width;
+    return this;
+  }
+
+  SquareLabel setLeftPadding(double leftPadding) {
+    this.leftPadding = leftPadding;
+    return this;
+  }
+
+  SquareLabel setLeftMargin(double leftMargin) {
+    this.leftMargin = leftMargin;
+    return this;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: width,
+//        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.fromLTRB(leftMargin, 15, 10, 10),
+        color: Color.fromARGB(222, 240, 240, 240),
+        child: Theme(
+          data: new ThemeData(
+            primaryColor: borderColor,
+            hintColor: borderColor,
+          ),
+          child: TextField(
+//            textAlign: TextAlign.center,
+            controller: TextEditingController(
+              text: text,
+            ),
+            enabled: false,
+            decoration: InputDecoration(
+//              contentPadding: EdgeInsets.all(10.0),
+              contentPadding: EdgeInsets.fromLTRB(leftPadding, 5, 10, 5),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(1.0),
+              ),
+            ),
+          ),
+        ));
   }
 }
